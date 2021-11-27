@@ -13,6 +13,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -21,6 +22,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
+import com.erkprog.rateit.components.mouth.CubicBezierViewer
 import com.erkprog.rateit.components.mouth.Mouth
 import com.erkprog.rateit.ui.theme.RateItTheme
 
@@ -37,19 +40,26 @@ class MainActivity : ComponentActivity() {
                         val widthDp = with(LocalDensity.current) { width.toDp() }
                         val heightDp = with(LocalDensity.current) { height.toDp() }
                         var progress by remember { mutableStateOf(0f) }
-                        Mouth(
-                            progress = progress,
+                        CubicBezierViewer(
                             modifier = Modifier
-                                .offset(
-                                    x = widthDp * 0.2f,
-                                    y = heightDp * 0.55f
-                                )
-                                .width(widthDp * 0.6f)
-                                .height(heightDp * 0.18f)
-                                .border(
-                                    width = 1.dp, color = Color.Red
-                                )
+                                .align(Alignment.Center)
+                                .size(250.dp)
+                                .border(width = 2.dp, color = Color.Blue)
+                                .zIndex(2f)
                         )
+//                        Mouth(
+//                            progress = progress,
+//                            modifier = Modifier
+//                                .offset(
+//                                    x = widthDp * 0.2f,
+//                                    y = heightDp * 0.55f
+//                                )
+//                                .width(widthDp * 0.6f)
+//                                .height(heightDp * 0.18f)
+//                                .border(
+//                                    width = 1.dp, color = Color.Red
+//                                )
+//                        )
 
                         Slider(
                             modifier = Modifier
