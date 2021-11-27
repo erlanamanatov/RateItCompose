@@ -85,21 +85,21 @@ fun Mouth(
         val cp3 = cp3Values.getOffsetValue(progress)
         val cp4 = cp4Values.getOffsetValue(progress)
 
-        drawCircle(
-            color = Color.Red,
-            radius = 5f,
-            center = v1
-        )
-        drawCircle(
-            color = Color.Red,
-            radius = 5f,
-            center = v2
-        )
-        drawCircle(
-            color = Color.Red,
-            radius = 5f,
-            center = v3
-        )
+//        drawCircle(
+//            color = Color.Red,
+//            radius = 5f,
+//            center = v1
+//        )
+//        drawCircle(
+//            color = Color.Red,
+//            radius = 5f,
+//            center = v2
+//        )
+//        drawCircle(
+//            color = Color.Red,
+//            radius = 5f,
+//            center = v3
+//        )
 
         val path = Path().apply {
             moveTo(v1.x, v1.y)
@@ -121,7 +121,7 @@ fun Mouth(
             )
         }
 
-        drawPath(path = path, color = Color.Red, style = Stroke(width = 1f))
+        drawPath(path = path, color = Color.Red, style = Stroke(width = 4f))
     }
 }
 

@@ -51,24 +51,37 @@ class MainActivity : ComponentActivity() {
                         Eye(
                             progress = progress,
                             modifier = Modifier
-                                .align(Alignment.Center)
-                                .size(250.dp)
-                                .border(width = 2.dp, color = Color.Blue)
-                                .zIndex(2f)
+                                .align(Alignment.CenterStart)
+                                .offset(x = 25.dp, y = (-150).dp)
+                                .fillMaxWidth(0.4f)
+                                .aspectRatio(1f)
+//                                .border(width = 2.dp, color = Color.Blue)
+//                                .zIndex(2f)
                         )
-//                        Mouth(
-//                            progress = progress,
-//                            modifier = Modifier
-//                                .offset(
-//                                    x = widthDp * 0.2f,
-//                                    y = heightDp * 0.55f
-//                                )
-//                                .width(widthDp * 0.6f)
-//                                .height(heightDp * 0.18f)
+                        Eye(
+                            progress = progress,
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                                .offset(x = (-25).dp, y = (-150).dp)
+                                .fillMaxWidth(0.4f)
+                                .aspectRatio(1f),
+                            flipHorizontally = true
+//                                .border(width = 2.dp, color = Color.Blue)
+//                                .zIndex(2f)
+                        )
+                        Mouth(
+                            progress = progress,
+                            modifier = Modifier
+                                .offset(
+                                    x = widthDp * 0.2f,
+                                    y = heightDp * 0.55f
+                                )
+                                .width(widthDp * 0.6f)
+                                .height(heightDp * 0.18f)
 //                                .border(
 //                                    width = 1.dp, color = Color.Red
 //                                )
-//                        )
+                        )
 
                         Slider(
                             modifier = Modifier
