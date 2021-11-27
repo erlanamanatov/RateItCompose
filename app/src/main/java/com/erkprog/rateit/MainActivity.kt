@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.erkprog.rateit.components.mouth.CubicBezierViewer
+import com.erkprog.rateit.components.mouth.Eye
 import com.erkprog.rateit.components.mouth.Mouth
 import com.erkprog.rateit.ui.theme.RateItTheme
 
@@ -40,7 +41,15 @@ class MainActivity : ComponentActivity() {
                         val widthDp = with(LocalDensity.current) { width.toDp() }
                         val heightDp = with(LocalDensity.current) { height.toDp() }
                         var progress by remember { mutableStateOf(0f) }
-                        CubicBezierViewer(
+//                        CubicBezierViewer(
+//                            modifier = Modifier
+//                                .align(Alignment.Center)
+//                                .size(250.dp)
+//                                .border(width = 2.dp, color = Color.Blue)
+//                                .zIndex(2f)
+//                        )
+                        Eye(
+                            progress = progress,
                             modifier = Modifier
                                 .align(Alignment.Center)
                                 .size(250.dp)

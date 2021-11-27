@@ -17,6 +17,7 @@ import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlin.math.roundToInt
 
 @Composable
@@ -65,21 +66,82 @@ fun CubicBezierViewer(modifier: Modifier = Modifier) {
         var cp31bx by remember { mutableStateOf(v1x - 100f) }
         var cp31by by remember { mutableStateOf(v1y + 100f) }
 
+        val v1Vector = Offset(v1x / width, v1y / height)
+        val v2Vector = Offset(v2x / width, v2y / height)
+        val v3Vector = Offset(v3x / width, v3y / height)
+
+        var cp12aVector = -Offset(v1x, v1y) + Offset(cp12ax, cp12ay)
+        cp12aVector = Offset(cp12aVector.x / width, cp12aVector.y / height)
+        var cp12bVector = -Offset(v2x, v2y) + Offset(cp12bx, cp12by)
+        cp12bVector = Offset(cp12bVector.x / width, cp12bVector.y / height)
+        var cp23aVector = -Offset(v2x, v2y) + Offset(cp23ax, cp23ay)
+        cp23aVector = Offset(cp23aVector.x / width, cp23aVector.y / height)
+        var cp23bVector = -Offset(v3x, v3y) + Offset(cp23bx, cp23by)
+        cp23bVector = Offset(cp23bVector.x / width, cp23bVector.y / height)
+        var cp31aVector = -Offset(v3x, v3y) + Offset(cp31ax, cp31ay)
+        cp31aVector = Offset(cp31aVector.x / width, cp31aVector.y / height)
+        var cp31bVector = -Offset(v1x, v1y) + Offset(cp31bx, cp31by)
+        cp31bVector = Offset(cp31bVector.x / width, cp31bVector.y / height)
+
         Column(
             Modifier
                 .align(Alignment.TopCenter)
-                .offset(y = (-240).dp)
+                .fillMaxWidth()
+                .offset(y = (-220).dp)
         ) {
-            Text(text = "v1(%.2f, %.2f)".format(v1x, v1y))
-            Text(text = "v2(%.2f, %.2f)".format(v2x, v2y))
-            Text(text = "v3(%.2f, %.2f)".format(v3x, v3y))
+//            Text(text = "v1(%.2f, %.2f)".format(v1x, v1y))
+            InfoText(pointName = "v1", xAbs = v1x, yAbs = v1y, xRel = v1Vector.x, yRel = v1Vector.y)
+            InfoText(pointName = "v2", xAbs = v2x, yAbs = v2y, xRel = v2Vector.x, yRel = v2Vector.y)
+            InfoText(pointName = "v3", xAbs = v3x, yAbs = v3y, xRel = v3Vector.x, yRel = v3Vector.y)
+//            Text(text = "v2(%.2f, %.2f)".format(v2x, v2y))
+//            Text(text = "v3(%.2f, %.2f)".format(v3x, v3y))
             Text(text = "  ")
-            Text(text = "cp12a(%.2f, %.2f)".format(cp12ax, cp12ay))
-            Text(text = "cp12b(%.2f, %.2f)".format(cp12bx, cp12by))
-            Text(text = "cp23a(%.2f, %.2f)".format(cp23ax, cp23ay))
-            Text(text = "cp23b(%.2f, %.2f)".format(cp23bx, cp23by))
-            Text(text = "cp31a(%.2f, %.2f)".format(cp31ax, cp31ay))
-            Text(text = "cp31b(%.2f, %.2f)".format(cp31bx, cp31by))
+            InfoText(
+                pointName = "cp12a",
+                xAbs = cp12ax,
+                yAbs = cp12ay,
+                xRel = cp12aVector.x,
+                yRel = cp12aVector.y
+            )
+            InfoText(
+                pointName = "cp12b",
+                xAbs = cp12bx,
+                yAbs = cp12by,
+                xRel = cp12bVector.x,
+                yRel = cp12bVector.y
+            )
+            InfoText(
+                pointName = "cp23a",
+                xAbs = cp23ax,
+                yAbs = cp23ay,
+                xRel = cp23aVector.x,
+                yRel = cp23aVector.y
+            )
+            InfoText(
+                pointName = "cp23b",
+                xAbs = cp23bx,
+                yAbs = cp23by,
+                xRel = cp23bVector.x,
+                yRel = cp23bVector.y
+            )
+            InfoText(
+                pointName = "cp31a",
+                xAbs = cp31ax,
+                yAbs = cp31ay,
+                xRel = cp31aVector.x,
+                yRel = cp31aVector.y
+            )
+            InfoText(
+                pointName = "cp31b",
+                xAbs = cp31bx,
+                yAbs = cp31by,
+                xRel = cp31bVector.x,
+                yRel = cp31bVector.y
+            )
+//            Text(text = "cp23a(%.2f, %.2f)".format(cp23ax, cp23ay))
+//            Text(text = "cp23b(%.2f, %.2f)".format(cp23bx, cp23by))
+//            Text(text = "cp31a(%.2f, %.2f)".format(cp31ax, cp31ay))
+//            Text(text = "cp31b(%.2f, %.2f)".format(cp31bx, cp31by))
 //            Text(text = "x: %.2f".format(v1x))
 //            Text(text = "y: %.2f".format(v1y))
 //            Text(text = "x: %.2f".format(v2x))
@@ -183,6 +245,21 @@ private fun DraggableCircle(
 //                    offsetY += dragAmount.y
                 }
             }
+    )
+
+}
+
+@Composable
+private fun InfoText(pointName: String, xAbs: Float, yAbs: Float, xRel: Float, yRel: Float) {
+    Text(
+        text = "%s(%.2f, %.2f)-vect(%.2f, %.2f)".format(
+            pointName,
+            xAbs,
+            yAbs,
+            xRel,
+            yRel
+        ),
+        fontSize = 12.sp
     )
 
 }
