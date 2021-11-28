@@ -15,7 +15,9 @@ import androidx.compose.ui.graphics.drawscope.withTransform
 fun Eye(
     progress: Float,
     modifier: Modifier = Modifier,
-    flipHorizontally: Boolean = false
+    flipHorizontally: Boolean = false,
+    strokeWidth: Float = 12f,
+    strokeColor: Color = Color.Black
 ) {
     Canvas(modifier = modifier.fillMaxSize()) {
         val width = size.width
@@ -152,7 +154,7 @@ fun Eye(
                 )
             }
 
-            drawPath(path = path, color = Color.Red, style = Stroke(width = 4f))
+            drawPath(path = path, color = strokeColor, style = Stroke(width = strokeWidth))
         }
     }
 }

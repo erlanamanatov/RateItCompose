@@ -13,67 +13,69 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 @Composable
 fun Mouth(
     progress: Float,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    strokeWidth: Float = 12f,
+    strokeColor: Color = Color.Black
 ) {
     Canvas(modifier = modifier.fillMaxSize()) {
         val width = size.width
         val height = size.height
         val v1Values = VertexValues(
             xValues = ValueLimits(
-                0.15f * width, 0.11f * width, 0.1f * width
+                0.12f * width, 0.08f * width, 0.08f * width
             ),
             yValues = ValueLimits(
-                0.75f * height, 0.3f * height, 0.25f * height
+                0.58f * height, 0.24f * height, 0.24f * height
             )
         )
 
         val v2Values = VertexValues(
             xValues = ValueLimits(
-                0.4f * width, 0.4f * width, 0.36f * width
+                0.38f * width, 0.39f * width, 0.36f * width
             ),
             yValues = ValueLimits(
-                0.55f * height, 0.35f * height, 0.6f * height
+                0.38f * height, 0.36f * height, 0.47f * height
             )
         )
         val v3Values = VertexValues(
             xValues = ValueLimits(
-                0.82f * width, 0.88f * width, 0.9f * width
+                0.86f * width, 0.93f * width, 0.93f * width
             ),
             yValues = ValueLimits(
-                0.5f * height, 0.4f * height, 0.38f * height
+                0.49f * height, 0.45f * height, 0.44f * height
             )
         )
 
         val cp1Values = VertexValues(
             xValues = ValueLimits(
-                0.05f * width, 0.01f * width, 0.03f * width
+                0.06f * width, 0.08f * width, 0.12f * width
             ),
             yValues = ValueLimits(
-                -0.4f * height, -0.1f * height, 0.12f * height
+                -0.16f * height, 0.02f * height, 0.11f * height
             )
         )
         val cp2Values = VertexValues(
             xValues = ValueLimits(
-                0.01f * width, -0.02f * width, -0.02f * width
+                -0.08f * width, -0.13f * width, -0.14f * width
             ),
             yValues = ValueLimits(
-                -0.15f * height, 0f * height, 0.02f * height
+                -0.14f * height, -0.05f * height, -0.11f * height
             )
         )
         val cp3Values = VertexValues(
             xValues = ValueLimits(
-                -0.01f * width, -0.04f * width, 0.04f * width
+                0.14f * width, 0.17f * width, 0.2f * width
             ),
             yValues = ValueLimits(
-                -0.25f * height, 0.01f * height, 0.09f * height
+                -0.23f * height, 0.06f * height, 0.15f * height
             )
         )
         val cp4Values = VertexValues(
             xValues = ValueLimits(
-                -0.02f * width, -0.3f * width, 0.05f * width
+                -0.15f * width, -0.17f * width, -0.19f * width
             ),
             yValues = ValueLimits(
-                -0.09f * height, 0f, 0.35f * height
+                -0.3f * height, 0.02f, 0.23f * height
             )
         )
 
@@ -120,8 +122,7 @@ fun Mouth(
                 v3.y
             )
         }
-
-        drawPath(path = path, color = Color.Red, style = Stroke(width = 4f))
+        drawPath(path = path, color = strokeColor, style = Stroke(width = strokeWidth))
     }
 }
 

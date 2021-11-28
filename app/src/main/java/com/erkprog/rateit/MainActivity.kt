@@ -33,8 +33,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             RateItTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
+                Surface(color = Color(0xFFc4eafc)) {
                     BoxWithConstraints(Modifier.fillMaxSize()) {
                         val width = constraints.maxWidth
                         val height = constraints.maxHeight
@@ -52,35 +51,40 @@ class MainActivity : ComponentActivity() {
                             progress = progress,
                             modifier = Modifier
                                 .align(Alignment.CenterStart)
-                                .offset(x = 25.dp, y = (-150).dp)
-                                .fillMaxWidth(0.4f)
+                                .offset(x = 50.dp, y = (-120).dp)
+                                .fillMaxWidth(0.35f)
                                 .aspectRatio(1f)
-//                                .border(width = 2.dp, color = Color.Blue)
-//                                .zIndex(2f)
                         )
                         Eye(
                             progress = progress,
                             modifier = Modifier
                                 .align(Alignment.CenterEnd)
-                                .offset(x = (-25).dp, y = (-150).dp)
-                                .fillMaxWidth(0.4f)
+                                .offset(x = (-50).dp, y = (-120).dp)
+                                .fillMaxWidth(0.35f)
                                 .aspectRatio(1f),
                             flipHorizontally = true
+                        )
+//                        CubicBezierViewer(
+//                            modifier = Modifier
+//                                .offset(
+//                                    x = widthDp * 0.26f,
+//                                    y = heightDp * 0.5f
+//                                )
+//                                .width(widthDp * 0.45f)
+//                                .height(heightDp * 0.18f)
+////                                .size(250.dp)
 //                                .border(width = 2.dp, color = Color.Blue)
 //                                .zIndex(2f)
-                        )
+//                        )
                         Mouth(
                             progress = progress,
                             modifier = Modifier
                                 .offset(
-                                    x = widthDp * 0.2f,
-                                    y = heightDp * 0.55f
+                                    x = widthDp * 0.26f,
+                                    y = heightDp * 0.5f
                                 )
-                                .width(widthDp * 0.6f)
+                                .width(widthDp * 0.45f)
                                 .height(heightDp * 0.18f)
-//                                .border(
-//                                    width = 1.dp, color = Color.Red
-//                                )
                         )
 
                         Slider(
