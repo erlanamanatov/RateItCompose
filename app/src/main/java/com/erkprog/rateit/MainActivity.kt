@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,6 +42,16 @@ class MainActivity : ComponentActivity() {
                         val widthDp = with(LocalDensity.current) { width.toDp() }
                         val heightDp = with(LocalDensity.current) { height.toDp() }
                         var progress by remember { mutableStateOf(0f) }
+
+                        var sliderStartWindowVector by remember { mutableStateOf(Offset.Zero) }
+                        var sliderEndWindowVector by remember { mutableStateOf(Offset.Zero) }
+
+                        var sliderPositioned by remember { mutableStateOf(false) }
+                        Column(modifier = Modifier.align(Alignment.TopCenter)) {
+                            Text(text = "start: $sliderStartWindowVector")
+                            Text(text = "start: $sliderEndWindowVector")
+
+                        }
 //                        CubicBezierViewer(
 //                            modifier = Modifier
 //                                .align(Alignment.Center)
@@ -47,23 +59,31 @@ class MainActivity : ComponentActivity() {
 //                                .border(width = 2.dp, color = Color.Blue)
 //                                .zIndex(2f)
 //                        )
-                        Eye(
-                            progress = progress,
-                            modifier = Modifier
-                                .align(Alignment.CenterStart)
-                                .offset(x = 50.dp, y = (-120).dp)
-                                .fillMaxWidth(0.35f)
-                                .aspectRatio(1f)
-                        )
-                        Eye(
-                            progress = progress,
-                            modifier = Modifier
-                                .align(Alignment.CenterEnd)
-                                .offset(x = (-50).dp, y = (-120).dp)
-                                .fillMaxWidth(0.35f)
-                                .aspectRatio(1f),
-                            flipHorizontally = true
-                        )
+                        if (sliderPositioned) {
+                            Eye(
+                                progress = progress,
+                                modifier = Modifier
+                                    .align(Alignment.CenterStart)
+                                    .offset(x = 50.dp, y = (-60).dp)
+                                    .fillMaxWidth(0.35f)
+                                    .aspectRatio(1f),
+//                                    .border(width = 3.dp, color = Color.Red),
+                                sliderStartWindowVector = sliderStartWindowVector,
+                                sliderEndWindowVector = sliderEndWindowVector
+                            )
+                            Eye(
+                                progress = progress,
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd)
+                                    .offset(x = (-50).dp, y = (-60).dp)
+                                    .fillMaxWidth(0.35f)
+                                    .aspectRatio(1f),
+//                                    .border(width = 3.dp, color = Color.Red),
+//                                flipHorizontally = true,
+                                sliderStartWindowVector = sliderStartWindowVector,
+                                sliderEndWindowVector = sliderEndWindowVector
+                            )
+                        }
 //                        CubicBezierViewer(
 //                            modifier = Modifier
 //                                .offset(
@@ -81,7 +101,7 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .offset(
                                     x = widthDp * 0.26f,
-                                    y = heightDp * 0.5f
+                                    y = heightDp * 0.6f
                                 )
                                 .width(widthDp * 0.45f)
                                 .height(heightDp * 0.18f)
@@ -91,8 +111,16 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)
                                 .fillMaxWidth()
-                                .padding(bottom = 40.dp)
-                                .padding(horizontal = 24.dp),
+                                .border(width = 3.dp, color = Color.Green)
+                                .padding(bottom = 100.dp)
+                                .padding(horizontal = 24.dp)
+                                .border(width = 3.dp, color = Color.Red)
+                                .onGloballyPositioned {
+                                    sliderStartWindowVector = it.positionInWindow()
+                                    sliderEndWindowVector =
+                                        it.positionInWindow() + Offset(it.size.width.toFloat(), 0f)
+                                    sliderPositioned = true
+                                },
                             value = progress,
                             onValueChange = {
                                 progress = it
