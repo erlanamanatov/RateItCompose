@@ -26,9 +26,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.erkprog.rateit.components.mouth.CubicBezierViewer
-import com.erkprog.rateit.components.mouth.Eye
-import com.erkprog.rateit.components.mouth.Mouth
+import com.erkprog.rateit.components.CubicBezierViewer
+import com.erkprog.rateit.components.*
 import com.erkprog.rateit.ui.theme.RateItTheme
 
 class MainActivity : ComponentActivity() {
@@ -36,13 +35,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             RateItTheme {
-                Surface(color = Color(0xFFc4eafc)) {
+                Surface(color = Color(0xfffff5ee)) {
                     BoxWithConstraints(Modifier.fillMaxSize()) {
                         val width = constraints.maxWidth
                         val height = constraints.maxHeight
                         val widthDp = with(LocalDensity.current) { width.toDp() }
                         val heightDp = with(LocalDensity.current) { height.toDp() }
-                        var progress by remember { mutableStateOf(0f) }
+                        var progress by remember { mutableStateOf(0.5f) }
 
                         var sliderStartWindowVector by remember { mutableStateOf(Offset.Zero) }
                         var sliderEndWindowVector by remember { mutableStateOf(Offset.Zero) }
@@ -51,11 +50,16 @@ class MainActivity : ComponentActivity() {
                         var sliderPositioned by remember { mutableStateOf(false) }
 
                         val dragged by interactionSource.collectIsDraggedAsState()
-                        val focused by interactionSource.collectIsFocusedAsState()
                         val pressed by interactionSource.collectIsPressedAsState()
                         val draggedOrPressed by remember {
                             derivedStateOf { dragged || pressed }
                         }
+
+                        BgColor(
+                            progress = progress, modifier = Modifier
+                                .fillMaxSize()
+                                .zIndex(0f)
+                        )
 
 //                        Column(modifier = Modifier.align(Alignment.TopCenter)) {
 ////                            Text(text = "start: $sliderStartWindowVector")
@@ -150,5 +154,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
 }
 

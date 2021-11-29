@@ -1,4 +1,4 @@
-package com.erkprog.rateit.components.mouth
+package com.erkprog.rateit.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
