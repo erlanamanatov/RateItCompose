@@ -4,41 +4,26 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VectorConverter
-import androidx.compose.animation.core.spring
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Slider
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.DrawStyle
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.erkprog.rateit.components.CubicBezierViewer
 import com.erkprog.rateit.components.*
 import com.erkprog.rateit.ui.theme.RateItTheme
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.erkprog.rateit.util.FaceShakeAnimation
+import com.erkprog.rateit.util.shakeFace
 import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
@@ -67,12 +52,12 @@ class MainActivity : ComponentActivity() {
                         }
 
                         val shake by remember {
-                            derivedStateOf { progress < 0.4f }
+                            derivedStateOf { progress < FaceShakeAnimation.shakeThreshold }
                         }
-                        val shakeAmpl = (LocalConfiguration.current.screenWidthDp * 0.05f).dp
-                        val shakeX = remember { Animatable(0.dp, Dp.VectorConverter) }
-                        val shakeY = remember { Animatable(0.dp, Dp.VectorConverter) }
-                        val shakeValue =
+                        val shakeValue = with(LocalDensity.current) {
+                            (widthDp * 0.005f).toPx().roundToInt()
+                        }
+                        val shakeOffset =
                             remember { Animatable(IntOffset.Zero, IntOffset.VectorConverter) }
 
                         BgColor(
@@ -81,28 +66,11 @@ class MainActivity : ComponentActivity() {
                                 .zIndex(0f)
                         )
 
-//                        Column(modifier = Modifier.align(Alignment.TopCenter)) {
-////                            Text(text = "start: $sliderStartWindowVector")
-////                            Text(text = "start: $sliderEndWindowVector")
-//                            Text(text = "dragged: $dragged")
-//                            Text(text = "focused: $focused")
-//                            Text(text = "pressed: $pressed")
-//                            Text(text = "combined: $draggedOrPressed")
-//                        }
-
-//                        CubicBezierViewer(
-//                            modifier = Modifier
-//                                .align(Alignment.Center)
-//                                .size(250.dp)
-//                                .border(width = 2.dp, color = Color.Blue)
-//                                .zIndex(2f)
-//                        )
                         if (sliderPositioned) {
                             Eye(
                                 progress = progress,
                                 modifier = Modifier
                                     .align(Alignment.CenterStart)
-//                                    .offset(x = 50.dp, y = (-60).dp)
                                     .offset {
                                         IntOffset(
                                             50.dp
@@ -111,11 +79,10 @@ class MainActivity : ComponentActivity() {
                                             (-60).dp
                                                 .toPx()
                                                 .roundToInt()
-                                        ) + shakeValue.value
+                                        ) + shakeOffset.value
                                     }
                                     .fillMaxWidth(0.35f)
                                     .aspectRatio(1f),
-//                                    .border(width = 3.dp, color = Color.Red),
                                 sliderStartWindowVector = sliderStartWindowVector,
                                 sliderEndWindowVector = sliderEndWindowVector,
                                 draggedOrPressed = draggedOrPressed
@@ -124,7 +91,16 @@ class MainActivity : ComponentActivity() {
                                 progress = progress,
                                 modifier = Modifier
                                     .align(Alignment.CenterEnd)
-                                    .offset(x = (-50).dp, y = (-60).dp)
+                                    .offset {
+                                        IntOffset(
+                                            x = (-50).dp
+                                                .toPx()
+                                                .roundToInt(),
+                                            y = (-60).dp
+                                                .toPx()
+                                                .roundToInt()
+                                        ) + shakeOffset.value
+                                    }
                                     .fillMaxWidth(0.35f)
                                     .aspectRatio(1f),
                                 flipHorizontally = true,
@@ -134,26 +110,19 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-//                        CubicBezierViewer(
-//                            modifier = Modifier
-//                                .offset(
-//                                    x = widthDp * 0.26f,
-//                                    y = heightDp * 0.5f
-//                                )
-//                                .width(widthDp * 0.45f)
-//                                .height(heightDp * 0.18f)
-////                                .size(250.dp)
-//                                .border(width = 2.dp, color = Color.Blue)
-//                                .zIndex(2f)
-//                        )
-
                         Mouth(
                             progress = progress,
                             modifier = Modifier
-                                .offset(
-                                    x = widthDp * 0.26f,
-                                    y = heightDp * 0.6f
-                                )
+                                .offset {
+                                    IntOffset(
+                                        x = (widthDp * 0.26f)
+                                            .toPx()
+                                            .roundToInt(),
+                                        y = (heightDp * 0.6f)
+                                            .toPx()
+                                            .roundToInt()
+                                    ) + shakeOffset.value
+                                }
                                 .width(widthDp * 0.45f)
                                 .height(heightDp * 0.18f)
                         )
@@ -162,10 +131,8 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)
                                 .fillMaxWidth()
-//                                .border(width = 3.dp, color = Color.Green)
                                 .padding(bottom = 100.dp)
                                 .padding(horizontal = 24.dp)
-//                                .border(width = 3.dp, color = Color.Red)
                                 .onGloballyPositioned {
                                     sliderStartWindowVector = it.positionInWindow()
                                     sliderEndWindowVector =
@@ -180,52 +147,11 @@ class MainActivity : ComponentActivity() {
                         )
 
                         LaunchedEffect(shake) {
-                            val stiffness = 80000f
-//                            val dRatio = Spring.DampingRatioHighBouncy
-                            val dRatio = Spring.DampingRatioLowBouncy
-                            val sss = 3
                             if (shake) {
-                                while (true) {
-                                    delay(1000)
-                                    shakeValue.animateTo(
-                                        IntOffset(sss, sss),
-                                        animationSpec = spring(
-                                            dampingRatio = dRatio,
-                                            stiffness = stiffness
-                                        )
-                                    )
-                                    shakeValue.animateTo(
-                                        IntOffset(-sss, -sss),
-                                        animationSpec = spring(
-                                            dampingRatio = dRatio,
-                                            stiffness = stiffness
-                                        )
-
-                                    )
-                                    shakeValue.animateTo(
-                                        IntOffset(sss, sss),
-                                        animationSpec = spring(
-                                            dampingRatio = dRatio,
-                                            stiffness = stiffness
-                                        )
-                                    )
-                                    shakeValue.animateTo(
-                                        IntOffset(-sss, -sss),
-                                        animationSpec = spring(
-                                            dampingRatio = dRatio,
-                                            stiffness = stiffness
-                                        )
-
-                                    )
-                                }
-
+                                shakeOffset.shakeFace(shakeValue)
                             } else {
-//                                launch { shakeX.animateTo(0.dp) }
-//                                launch { shakeY.animateTo(0.dp) }
-                                shakeValue.animateTo(IntOffset.Zero)
+                                shakeOffset.animateTo(IntOffset.Zero)
                             }
-
-
                         }
 
                     }
