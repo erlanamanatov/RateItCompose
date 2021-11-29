@@ -3,6 +3,10 @@ package com.erkprog.rateit
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.*
@@ -20,15 +24,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.erkprog.rateit.components.CubicBezierViewer
 import com.erkprog.rateit.components.*
 import com.erkprog.rateit.ui.theme.RateItTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +65,15 @@ class MainActivity : ComponentActivity() {
                         val draggedOrPressed by remember {
                             derivedStateOf { dragged || pressed }
                         }
+
+                        val shake by remember {
+                            derivedStateOf { progress < 0.4f }
+                        }
+                        val shakeAmpl = (LocalConfiguration.current.screenWidthDp * 0.05f).dp
+                        val shakeX = remember { Animatable(0.dp, Dp.VectorConverter) }
+                        val shakeY = remember { Animatable(0.dp, Dp.VectorConverter) }
+                        val shakeValue =
+                            remember { Animatable(IntOffset.Zero, IntOffset.VectorConverter) }
 
                         BgColor(
                             progress = progress, modifier = Modifier
@@ -82,7 +102,17 @@ class MainActivity : ComponentActivity() {
                                 progress = progress,
                                 modifier = Modifier
                                     .align(Alignment.CenterStart)
-                                    .offset(x = 50.dp, y = (-60).dp)
+//                                    .offset(x = 50.dp, y = (-60).dp)
+                                    .offset {
+                                        IntOffset(
+                                            50.dp
+                                                .toPx()
+                                                .roundToInt(),
+                                            (-60).dp
+                                                .toPx()
+                                                .roundToInt()
+                                        ) + shakeValue.value
+                                    }
                                     .fillMaxWidth(0.35f)
                                     .aspectRatio(1f),
 //                                    .border(width = 3.dp, color = Color.Red),
@@ -148,6 +178,55 @@ class MainActivity : ComponentActivity() {
                             },
                             interactionSource = interactionSource
                         )
+
+                        LaunchedEffect(shake) {
+                            val stiffness = 80000f
+//                            val dRatio = Spring.DampingRatioHighBouncy
+                            val dRatio = Spring.DampingRatioLowBouncy
+                            val sss = 3
+                            if (shake) {
+                                while (true) {
+                                    delay(1000)
+                                    shakeValue.animateTo(
+                                        IntOffset(sss, sss),
+                                        animationSpec = spring(
+                                            dampingRatio = dRatio,
+                                            stiffness = stiffness
+                                        )
+                                    )
+                                    shakeValue.animateTo(
+                                        IntOffset(-sss, -sss),
+                                        animationSpec = spring(
+                                            dampingRatio = dRatio,
+                                            stiffness = stiffness
+                                        )
+
+                                    )
+                                    shakeValue.animateTo(
+                                        IntOffset(sss, sss),
+                                        animationSpec = spring(
+                                            dampingRatio = dRatio,
+                                            stiffness = stiffness
+                                        )
+                                    )
+                                    shakeValue.animateTo(
+                                        IntOffset(-sss, -sss),
+                                        animationSpec = spring(
+                                            dampingRatio = dRatio,
+                                            stiffness = stiffness
+                                        )
+
+                                    )
+                                }
+
+                            } else {
+//                                launch { shakeX.animateTo(0.dp) }
+//                                launch { shakeY.animateTo(0.dp) }
+                                shakeValue.animateTo(IntOffset.Zero)
+                            }
+
+
+                        }
 
                     }
                 }
