@@ -3,11 +3,11 @@ package com.erkprog.rateit
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.foundation.interaction.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Slider
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,6 +27,7 @@ import com.erkprog.rateit.util.shakeFace
 import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
+    @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -38,6 +39,16 @@ class MainActivity : ComponentActivity() {
                         val widthDp = with(LocalDensity.current) { width.toDp() }
                         val heightDp = with(LocalDensity.current) { height.toDp() }
                         var progress by remember { mutableStateOf(0.5f) }
+
+                        val rating: State<Rating> = remember {
+                            derivedStateOf {
+                                when (progress) {
+                                    in 0f..0.35f -> Rating.HIDEOUS
+                                    in 0.35f..0.7f -> Rating.OK
+                                    else -> Rating.GOOD
+                                }
+                            }
+                        }
 
                         var sliderStartWindowVector by remember { mutableStateOf(Offset.Zero) }
                         var sliderEndWindowVector by remember { mutableStateOf(Offset.Zero) }
@@ -64,6 +75,14 @@ class MainActivity : ComponentActivity() {
                             progress = progress, modifier = Modifier
                                 .fillMaxSize()
                                 .zIndex(0f)
+                        )
+
+                        RatingTitle(
+                            modifier = Modifier
+                                .align(Alignment.TopCenter)
+                                .fillMaxWidth(0.6f)
+                                .padding(top = 60.dp),
+                            rating = rating.value
                         )
 
                         if (sliderPositioned) {

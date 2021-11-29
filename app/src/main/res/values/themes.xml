@@ -18,7 +18,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorSecondary</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
     </style>
 
     <style name="Theme.RateIt.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
