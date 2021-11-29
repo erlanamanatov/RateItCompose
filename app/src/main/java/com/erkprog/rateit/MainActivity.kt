@@ -127,12 +127,12 @@ class MainActivity : ComponentActivity() {
                                 .height(heightDp * 0.18f)
                         )
 
-                        Slider(
+                        CustomSlider(
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)
                                 .fillMaxWidth()
                                 .padding(bottom = 100.dp)
-                                .padding(horizontal = 24.dp)
+                                .padding(horizontal = 20.dp)
                                 .onGloballyPositioned {
                                     sliderStartWindowVector = it.positionInWindow()
                                     sliderEndWindowVector =
