@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Slider
@@ -46,12 +47,25 @@ class MainActivity : ComponentActivity() {
                         var sliderStartWindowVector by remember { mutableStateOf(Offset.Zero) }
                         var sliderEndWindowVector by remember { mutableStateOf(Offset.Zero) }
 
+                        val interactionSource = remember { MutableInteractionSource() }
                         var sliderPositioned by remember { mutableStateOf(false) }
-                        Column(modifier = Modifier.align(Alignment.TopCenter)) {
-                            Text(text = "start: $sliderStartWindowVector")
-                            Text(text = "start: $sliderEndWindowVector")
 
+                        val dragged by interactionSource.collectIsDraggedAsState()
+                        val focused by interactionSource.collectIsFocusedAsState()
+                        val pressed by interactionSource.collectIsPressedAsState()
+                        val draggedOrPressed by remember {
+                            derivedStateOf { dragged || pressed }
                         }
+
+//                        Column(modifier = Modifier.align(Alignment.TopCenter)) {
+////                            Text(text = "start: $sliderStartWindowVector")
+////                            Text(text = "start: $sliderEndWindowVector")
+//                            Text(text = "dragged: $dragged")
+//                            Text(text = "focused: $focused")
+//                            Text(text = "pressed: $pressed")
+//                            Text(text = "combined: $draggedOrPressed")
+//                        }
+
 //                        CubicBezierViewer(
 //                            modifier = Modifier
 //                                .align(Alignment.Center)
@@ -69,7 +83,8 @@ class MainActivity : ComponentActivity() {
                                     .aspectRatio(1f),
 //                                    .border(width = 3.dp, color = Color.Red),
                                 sliderStartWindowVector = sliderStartWindowVector,
-                                sliderEndWindowVector = sliderEndWindowVector
+                                sliderEndWindowVector = sliderEndWindowVector,
+                                draggedOrPressed = draggedOrPressed
                             )
                             Eye(
                                 progress = progress,
@@ -78,12 +93,13 @@ class MainActivity : ComponentActivity() {
                                     .offset(x = (-50).dp, y = (-60).dp)
                                     .fillMaxWidth(0.35f)
                                     .aspectRatio(1f),
-//                                    .border(width = 3.dp, color = Color.Red),
-//                                flipHorizontally = true,
+                                flipHorizontally = true,
                                 sliderStartWindowVector = sliderStartWindowVector,
-                                sliderEndWindowVector = sliderEndWindowVector
+                                sliderEndWindowVector = sliderEndWindowVector,
+                                draggedOrPressed = draggedOrPressed
                             )
                         }
+
 //                        CubicBezierViewer(
 //                            modifier = Modifier
 //                                .offset(
@@ -96,6 +112,7 @@ class MainActivity : ComponentActivity() {
 //                                .border(width = 2.dp, color = Color.Blue)
 //                                .zIndex(2f)
 //                        )
+
                         Mouth(
                             progress = progress,
                             modifier = Modifier
@@ -111,10 +128,10 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)
                                 .fillMaxWidth()
-                                .border(width = 3.dp, color = Color.Green)
+//                                .border(width = 3.dp, color = Color.Green)
                                 .padding(bottom = 100.dp)
                                 .padding(horizontal = 24.dp)
-                                .border(width = 3.dp, color = Color.Red)
+//                                .border(width = 3.dp, color = Color.Red)
                                 .onGloballyPositioned {
                                     sliderStartWindowVector = it.positionInWindow()
                                     sliderEndWindowVector =
@@ -124,8 +141,10 @@ class MainActivity : ComponentActivity() {
                             value = progress,
                             onValueChange = {
                                 progress = it
-                            }
+                            },
+                            interactionSource = interactionSource
                         )
+
                     }
                 }
             }

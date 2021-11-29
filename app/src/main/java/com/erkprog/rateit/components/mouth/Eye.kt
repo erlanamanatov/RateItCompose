@@ -1,5 +1,7 @@
 package com.erkprog.rateit.components.mouth
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.VectorConverter
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,6 +16,7 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.zIndex
 import kotlin.math.roundToInt
 
 @Composable
@@ -24,7 +27,8 @@ fun Eye(
     strokeWidth: Float = 12f,
     strokeColor: Color = Color.Black,
     sliderStartWindowVector: Offset = Offset.Zero,
-    sliderEndWindowVector: Offset = Offset.Zero
+    sliderEndWindowVector: Offset = Offset.Zero,
+    draggedOrPressed: Boolean = false
 ) {
     var sliderStartEyeVector by remember { mutableStateOf(Offset.Zero) }
     var sliderEndEyeVector by remember { mutableStateOf(Offset.Zero) }
@@ -39,7 +43,7 @@ fun Eye(
         var sliderCurrentEyeVector by remember(progress) {
             mutableStateOf(Offset.Zero)
         }
-        var pupilCurrentEyeVector by remember {
+        var pupilTargetEyeVector by remember {
             mutableStateOf(Offset.Zero)
         }
         val sliderVectorMaxLength by remember {
@@ -52,15 +56,15 @@ fun Eye(
 
         val pupilCenter =
             Offset(if (flipHorizontally) boxWidth * 0.55f else boxWidth * 0.45f, boxHeight * 0.45f)
-        val pupilMovementRadius = 0.18f * boxHeight
-//        val pupilCurrentEyeVector by remember {
-//            derivedStateOf {
-//                (sliderCurrentEyeVector - pupilCenter).normalize()
-//                    .times(pupilMovementRadius) + pupilCenter
-//            }
-//        }
+        var pupilCurrentPosition = remember {
+            Animatable(
+                Offset(pupilCenter.x, pupilCenter.y),
+                Offset.VectorConverter
+            )
+        }
+        val pupilMovementRadius = 0.17f * boxHeight
 
-        pupilCurrentEyeVector = (sliderCurrentEyeVector - pupilCenter).normalize()
+        pupilTargetEyeVector = (sliderCurrentEyeVector - pupilCenter).normalize()
             .times(pupilMovementRadius) + pupilCenter
 
 
@@ -82,12 +86,13 @@ fun Eye(
 
         Box(modifier = Modifier
             .size(pupilSize)
+            .zIndex(1f)
             .offset {
                 IntOffset(
-                    pupilCurrentEyeVector.x.roundToInt() - (pupilSize / 2)
+                    pupilCurrentPosition.value.x.roundToInt() - (pupilSize / 2)
                         .toPx()
                         .roundToInt(),
-                    pupilCurrentEyeVector.y.roundToInt() - (pupilSize / 2)
+                    pupilCurrentPosition.value.y.roundToInt() - (pupilSize / 2)
                         .toPx()
                         .roundToInt()
                 )
@@ -97,6 +102,7 @@ fun Eye(
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
+                .zIndex(0f)
         ) {
             val width = size.width
             val height = size.height
@@ -232,12 +238,18 @@ fun Eye(
                     )
                 }
 
+                drawPath(path = path, color = Color.White)
                 drawPath(path = path, color = strokeColor, style = Stroke(width = strokeWidth))
-
             }
         }
 
-
+        LaunchedEffect(draggedOrPressed) {
+            if (draggedOrPressed) {
+                while (true) {
+                    pupilCurrentPosition.animateTo(pupilTargetEyeVector)
+                }
+            } else pupilCurrentPosition.animateTo(pupilCenter)
+        }
     }
 }
 
