@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import com.erkprog.rateit.model.VertexCoordinates
+import com.erkprog.rateit.util.cubicTo
+import com.erkprog.rateit.util.moveTo
 
 @Composable
 fun Mouth(
@@ -20,133 +22,98 @@ fun Mouth(
     Canvas(modifier = modifier.fillMaxSize()) {
         val width = size.width
         val height = size.height
-        val v1Values = VertexValues(
-            xValues = ValueLimits(
-                0.12f * width, 0.08f * width, 0.08f * width
+        val vertex1 = VertexCoordinates(
+            hideousPosition = Offset(
+                0.12f * width, 0.58f * height
             ),
-            yValues = ValueLimits(
-                0.58f * height, 0.24f * height, 0.24f * height
+            okPosition = Offset(
+                0.08f * width, 0.24f * height
+            ),
+            goodPosition = Offset(
+                0.08f * width, 0.24f * height
+            )
+        )
+        val vertex2 = VertexCoordinates(
+            hideousPosition = Offset(
+                0.38f * width, 0.38f * height
+            ),
+            okPosition = Offset(
+                0.39f * width, 0.36f * height
+            ),
+            goodPosition = Offset(
+                0.36f * width, 0.47f * height
+            )
+        )
+        val vertex3 = VertexCoordinates(
+            hideousPosition = Offset(
+                0.86f * width, 0.49f * height
+            ),
+            okPosition = Offset(
+                0.93f * width, 0.45f * height
+            ),
+            goodPosition = Offset(
+                0.93f * width, 0.44f * height
             )
         )
 
-        val v2Values = VertexValues(
-            xValues = ValueLimits(
-                0.38f * width, 0.39f * width, 0.36f * width
+        val cp12a = VertexCoordinates(
+            hideousPosition = Offset(
+                0.06f * width, -0.16f * height
             ),
-            yValues = ValueLimits(
-                0.38f * height, 0.36f * height, 0.47f * height
+            okPosition = Offset(
+                0.08f * width, 0.02f * height
+            ),
+            goodPosition = Offset(
+                0.12f * width, 0.11f * height
             )
         )
-        val v3Values = VertexValues(
-            xValues = ValueLimits(
-                0.86f * width, 0.93f * width, 0.93f * width
+        val cp12b = VertexCoordinates(
+            hideousPosition = Offset(
+                -0.08f * width, -0.14f * height
             ),
-            yValues = ValueLimits(
-                0.49f * height, 0.45f * height, 0.44f * height
+            okPosition = Offset(
+                -0.13f * width, -0.05f * height
+            ),
+            goodPosition = Offset(
+                -0.14f * width, -0.11f * height
             )
         )
-
-        val cp1Values = VertexValues(
-            xValues = ValueLimits(
-                0.06f * width, 0.08f * width, 0.12f * width
+        val cp23a = VertexCoordinates(
+            hideousPosition = Offset(
+                0.14f * width, -0.23f * height
             ),
-            yValues = ValueLimits(
-                -0.16f * height, 0.02f * height, 0.11f * height
+            okPosition = Offset(
+                0.17f * width, 0.06f * height
+            ),
+            goodPosition = Offset(
+                0.2f * width, 0.15f * height
             )
         )
-        val cp2Values = VertexValues(
-            xValues = ValueLimits(
-                -0.08f * width, -0.13f * width, -0.14f * width
+        val cp23b = VertexCoordinates(
+            hideousPosition = Offset(
+                -0.15f * width, -0.3f * height
             ),
-            yValues = ValueLimits(
-                -0.14f * height, -0.05f * height, -0.11f * height
-            )
-        )
-        val cp3Values = VertexValues(
-            xValues = ValueLimits(
-                0.14f * width, 0.17f * width, 0.2f * width
+            okPosition = Offset(
+                -0.17f * width, 0.02f * height
             ),
-            yValues = ValueLimits(
-                -0.23f * height, 0.06f * height, 0.15f * height
-            )
-        )
-        val cp4Values = VertexValues(
-            xValues = ValueLimits(
-                -0.15f * width, -0.17f * width, -0.19f * width
-            ),
-            yValues = ValueLimits(
-                -0.3f * height, 0.02f, 0.23f * height
+            goodPosition = Offset(
+                -0.19f * width, 0.23f * height
             )
         )
 
-        val v1 = v1Values.getOffsetValue(progress)
-        val v2 = v2Values.getOffsetValue(progress)
-        val v3 = v3Values.getOffsetValue(progress)
-        val cp1 = cp1Values.getOffsetValue(progress)
-        val cp2 = cp2Values.getOffsetValue(progress)
-        val cp3 = cp3Values.getOffsetValue(progress)
-        val cp4 = cp4Values.getOffsetValue(progress)
-
-//        drawCircle(
-//            color = Color.Red,
-//            radius = 5f,
-//            center = v1
-//        )
-//        drawCircle(
-//            color = Color.Red,
-//            radius = 5f,
-//            center = v2
-//        )
-//        drawCircle(
-//            color = Color.Red,
-//            radius = 5f,
-//            center = v3
-//        )
+        val v1 = vertex1.getCurrentPosition(progress)
+        val v2 = vertex2.getCurrentPosition(progress)
+        val v3 = vertex3.getCurrentPosition(progress)
+        val cp12aCur = cp12a.getCurrentPosition(progress)
+        val cp12bCur = cp12b.getCurrentPosition(progress)
+        val cp23aCur = cp23a.getCurrentPosition(progress)
+        val cp23bCur = cp23b.getCurrentPosition(progress)
 
         val path = Path().apply {
-            moveTo(v1.x, v1.y)
-            cubicTo(
-                v1.x + cp1.x,
-                v1.y + cp1.y,
-                v2.x + cp2.x,
-                v2.y + cp2.y,
-                v2.x,
-                v2.y
-            )
-            cubicTo(
-                v2.x + cp3.x,
-                v2.y + cp3.y,
-                v3.x + cp4.x,
-                v3.y + cp4.y,
-                v3.x,
-                v3.y
-            )
+            moveTo(v1)
+            cubicTo(v1 + cp12aCur, v2 + cp12bCur, v2)
+            cubicTo(v2 + cp23aCur, v3 + cp23bCur, v3)
         }
         drawPath(path = path, color = strokeColor, style = Stroke(width = strokeWidth))
     }
 }
-
-data class VertexValues(val xValues: ValueLimits, val yValues: ValueLimits) {
-    fun getYvalue(progress: Float): Float {
-        return if (progress <= 0.5f) {
-            ((yValues.average - yValues.sad) * progress + 0.5f * yValues.sad) / 0.5f
-        } else {
-            ((yValues.good - yValues.average) * (progress - 0.5f) + 0.5f * yValues.average) / 0.5f
-        }
-    }
-
-    fun getXvalue(progress: Float): Float {
-        return if (progress <= 0.5f) {
-            ((xValues.average - xValues.sad) * progress + 0.5f * xValues.sad) / 0.5f
-        } else {
-            ((xValues.good - xValues.average) * (progress - 0.5f) + 0.5f * xValues.average) / 0.5f
-        }
-    }
-
-    fun getOffsetValue(progress: Float): Offset {
-        return Offset(getXvalue(progress), getYvalue(progress))
-    }
-}
-
-data class ValueLimits(val sad: Float = 0f, val average: Float = 0f, val good: Float = 0f)
-

@@ -1,4 +1,4 @@
-package com.erkprog.rateit
+package com.erkprog.rateit.model
 
 enum class Rating(val title: String, val value: Int) {
     HIDEOUS("Hideous", 1),
