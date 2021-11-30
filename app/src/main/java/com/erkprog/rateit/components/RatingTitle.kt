@@ -30,7 +30,7 @@ fun RatingTitle(
         Text(
             text = "How was your ride?",
             style = TextStyle(
-                color = Color.Black,
+                color = Color.Black.copy(alpha = 0.8f),
                 fontSize = 40.sp
             ),
             textAlign = TextAlign.Center
@@ -53,7 +53,7 @@ fun RatingTitle(
             Text(
                 text = targetRating.title,
                 style = TextStyle(
-                    color = Color.Black.copy(alpha = 0.8f),
+                    color = Color.Black.copy(alpha = 0.7f),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Light
                 )

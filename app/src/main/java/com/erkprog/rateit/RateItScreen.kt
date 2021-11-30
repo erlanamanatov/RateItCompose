@@ -13,11 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.erkprog.rateit.components.*
+import com.erkprog.rateit.model.Rating
 import com.erkprog.rateit.util.FaceShakeAnimation
 import com.erkprog.rateit.util.shakeFace
 import kotlin.math.roundToInt
@@ -25,11 +26,7 @@ import kotlin.math.roundToInt
 @ExperimentalAnimationApi
 @Composable
 fun RateItScreen(modifier: Modifier = Modifier) {
-    BoxWithConstraints(modifier = modifier) {
-        val width = constraints.maxWidth
-        val height = constraints.maxHeight
-        val widthDp = with(LocalDensity.current) { width.toDp() }
-        val heightDp = with(LocalDensity.current) { height.toDp() }
+    Box(modifier = modifier) {
         var progress by remember { mutableStateOf(0.5f) }
 
         val rating: State<Rating> = remember {
@@ -54,9 +51,8 @@ fun RateItScreen(modifier: Modifier = Modifier) {
         val shake by remember {
             derivedStateOf { progress < FaceShakeAnimation.shakeThreshold }
         }
-        val shakeValue = with(LocalDensity.current) {
-            (widthDp * 0.005f).toPx().roundToInt()
-        }
+        val width = LocalConfiguration.current.screenWidthDp
+        val shakeValue = (width * 0.01f).roundToInt().coerceAtLeast(2)
         val shakeOffset =
             remember { Animatable(IntOffset.Zero, IntOffset.VectorConverter) }
 
@@ -66,93 +62,48 @@ fun RateItScreen(modifier: Modifier = Modifier) {
                 .zIndex(0f)
         )
 
-        RatingTitle(
+        Column(
             modifier = Modifier
-                .align(Alignment.TopCenter)
-                .fillMaxWidth(0.6f)
-                .padding(top = 60.dp),
-            rating = rating.value
-        )
-
-        if (sliderPositioned) {
-            Eye(
-                progress = progress,
+                .padding(vertical = 35.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            RatingTitle(
                 modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .offset {
-                        IntOffset(
-                            50.dp
-                                .toPx()
-                                .roundToInt(),
-                            (-60).dp
-                                .toPx()
-                                .roundToInt()
-                        ) + shakeOffset.value
-                    }
-                    .fillMaxWidth(0.35f)
-                    .aspectRatio(1f),
-                sliderStartWindowVector = sliderStartWindowVector,
-                sliderEndWindowVector = sliderEndWindowVector,
-                draggedOrPressed = dragged || pressed
+                    .fillMaxWidth(0.6f)
+                    .weight(0.3f),
+                rating = rating.value
             )
-            Eye(
-                progress = progress,
+            AnimatedFace(
                 modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .offset {
-                        IntOffset(
-                            x = (-50).dp
-                                .toPx()
-                                .roundToInt(),
-                            y = (-60).dp
-                                .toPx()
-                                .roundToInt()
-                        ) + shakeOffset.value
-                    }
-                    .fillMaxWidth(0.35f)
-                    .aspectRatio(1f),
-                flipHorizontally = true,
+                    .weight(0.55f)
+                    .fillMaxWidth()
+                    .offset { shakeOffset.value },
+                sliderPositioned = sliderPositioned,
+                progress = progress,
                 sliderStartWindowVector = sliderStartWindowVector,
                 sliderEndWindowVector = sliderEndWindowVector,
-                draggedOrPressed = dragged || pressed
+                focusedOnSlider = dragged || pressed
+            )
+
+            CustomSlider(
+                modifier = Modifier
+                    .weight(0.15f)
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .onGloballyPositioned {
+                        sliderStartWindowVector = it.positionInWindow()
+                        sliderEndWindowVector =
+                            it.positionInWindow() + Offset(it.size.width.toFloat(), 0f)
+                        sliderPositioned = true
+                    },
+                value = progress,
+                onValueChange = {
+                    progress = it
+                },
+                interactionSource = interactionSource
             )
         }
-
-        Mouth(
-            progress = progress,
-            modifier = Modifier
-                .offset {
-                    IntOffset(
-                        x = (widthDp * 0.26f)
-                            .toPx()
-                            .roundToInt(),
-                        y = (heightDp * 0.6f)
-                            .toPx()
-                            .roundToInt()
-                    ) + shakeOffset.value
-                }
-                .width(widthDp * 0.45f)
-                .height(heightDp * 0.18f)
-        )
-
-        CustomSlider(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(bottom = 100.dp)
-                .padding(horizontal = 20.dp)
-                .onGloballyPositioned {
-                    sliderStartWindowVector = it.positionInWindow()
-                    sliderEndWindowVector =
-                        it.positionInWindow() + Offset(it.size.width.toFloat(), 0f)
-                    sliderPositioned = true
-                },
-            value = progress,
-            onValueChange = {
-                progress = it
-            },
-            interactionSource = interactionSource
-        )
 
         LaunchedEffect(shake) {
             if (shake) {
@@ -161,7 +112,6 @@ fun RateItScreen(modifier: Modifier = Modifier) {
                 shakeOffset.animateTo(IntOffset.Zero)
             }
         }
-
     }
-
 }
+
