@@ -26,26 +26,6 @@ fun CubicBezierViewer(modifier: Modifier = Modifier) {
         val width = constraints.maxWidth.toFloat()
         val height = constraints.maxHeight.toFloat()
 
-//        var v1x by remember { mutableStateOf(0f) }
-//        var v1y by remember { mutableStateOf(0f) }
-//        var v2x by remember { mutableStateOf(0f) }
-//        var v2y by remember { mutableStateOf(0f) }
-//        var v3x by remember { mutableStateOf(0f) }
-//        var v3y by remember { mutableStateOf(0f) }
-
-//        var cp12ax by remember { mutableStateOf(0f) }
-//        var cp12ay by remember { mutableStateOf(0f) }
-//        var cp12bx by remember { mutableStateOf(0f) }
-//        var cp12by by remember { mutableStateOf(0f) }
-//        var cp23ax by remember { mutableStateOf(0f) }
-//        var cp23ay by remember { mutableStateOf(0f) }
-//        var cp23bx by remember { mutableStateOf(0f) }
-//        var cp23by by remember { mutableStateOf(0f) }
-//        var cp31ax by remember { mutableStateOf(0f) }
-//        var cp31ay by remember { mutableStateOf(0f) }
-//        var cp31bx by remember { mutableStateOf(0f) }
-//        var cp31by by remember { mutableStateOf(0f) }
-
         var v1x by remember { mutableStateOf(0.1f * width) }
         var v1y by remember { mutableStateOf(0.1f * height) }
         var v2x by remember { mutableStateOf(0.85f * width) }
@@ -61,14 +41,14 @@ fun CubicBezierViewer(modifier: Modifier = Modifier) {
         var cp23ay by remember { mutableStateOf(v2y + 150f) }
         var cp23bx by remember { mutableStateOf(v3x + 150f) }
         var cp23by by remember { mutableStateOf(v3y + 20f) }
-//        var cp31ax by remember { mutableStateOf(v3x - 150f) }
-//        var cp31ay by remember { mutableStateOf(v3y + 20f) }
-//        var cp31bx by remember { mutableStateOf(v1x - 100f) }
-//        var cp31by by remember { mutableStateOf(v1y + 100f) }
+        var cp31ax by remember { mutableStateOf(v3x - 150f) }
+        var cp31ay by remember { mutableStateOf(v3y + 20f) }
+        var cp31bx by remember { mutableStateOf(v1x - 100f) }
+        var cp31by by remember { mutableStateOf(v1y + 100f) }
 
-        val v1Vector = Offset(v1x / width, v1y / height)
-        val v2Vector = Offset(v2x / width, v2y / height)
-        val v3Vector = Offset(v3x / width, v3y / height)
+//        val v1Vector = Offset(v1x / width, v1y / height)
+//        val v2Vector = Offset(v2x / width, v2y / height)
+//        val v3Vector = Offset(v3x / width, v3y / height)
 
         var cp12aVector = -Offset(v1x, v1y) + Offset(cp12ax, cp12ay)
         cp12aVector = Offset(cp12aVector.x / width, cp12aVector.y / height)
@@ -78,52 +58,49 @@ fun CubicBezierViewer(modifier: Modifier = Modifier) {
         cp23aVector = Offset(cp23aVector.x / width, cp23aVector.y / height)
         var cp23bVector = -Offset(v3x, v3y) + Offset(cp23bx, cp23by)
         cp23bVector = Offset(cp23bVector.x / width, cp23bVector.y / height)
-//        var cp31aVector = -Offset(v3x, v3y) + Offset(cp31ax, cp31ay)
-//        cp31aVector = Offset(cp31aVector.x / width, cp31aVector.y / height)
-//        var cp31bVector = -Offset(v1x, v1y) + Offset(cp31bx, cp31by)
-//        cp31bVector = Offset(cp31bVector.x / width, cp31bVector.y / height)
+        var cp31aVector = -Offset(v3x, v3y) + Offset(cp31ax, cp31ay)
+        cp31aVector = Offset(cp31aVector.x / width, cp31aVector.y / height)
+        var cp31bVector = -Offset(v1x, v1y) + Offset(cp31bx, cp31by)
+        cp31bVector = Offset(cp31bVector.x / width, cp31bVector.y / height)
 
-        Column(
-            Modifier
-                .align(Alignment.TopCenter)
-                .fillMaxWidth()
-                .offset(y = (-220).dp)
-        ) {
-//            Text(text = "v1(%.2f, %.2f)".format(v1x, v1y))
-            InfoText(pointName = "v1", xAbs = v1x, yAbs = v1y, xRel = v1Vector.x, yRel = v1Vector.y)
-            InfoText(pointName = "v2", xAbs = v2x, yAbs = v2y, xRel = v2Vector.x, yRel = v2Vector.y)
-            InfoText(pointName = "v3", xAbs = v3x, yAbs = v3y, xRel = v3Vector.x, yRel = v3Vector.y)
-//            Text(text = "v2(%.2f, %.2f)".format(v2x, v2y))
-//            Text(text = "v3(%.2f, %.2f)".format(v3x, v3y))
-            Text(text = "  ")
-            InfoText(
-                pointName = "cp12a",
-                xAbs = cp12ax,
-                yAbs = cp12ay,
-                xRel = cp12aVector.x,
-                yRel = cp12aVector.y
-            )
-            InfoText(
-                pointName = "cp12b",
-                xAbs = cp12bx,
-                yAbs = cp12by,
-                xRel = cp12bVector.x,
-                yRel = cp12bVector.y
-            )
-            InfoText(
-                pointName = "cp23a",
-                xAbs = cp23ax,
-                yAbs = cp23ay,
-                xRel = cp23aVector.x,
-                yRel = cp23aVector.y
-            )
-            InfoText(
-                pointName = "cp23b",
-                xAbs = cp23bx,
-                yAbs = cp23by,
-                xRel = cp23bVector.x,
-                yRel = cp23bVector.y
-            )
+//        Column(
+//            Modifier
+//                .align(Alignment.TopCenter)
+//                .fillMaxWidth()
+//                .offset(y = (-220).dp)
+//        ) {
+//            InfoText(pointName = "v1", xAbs = v1x, yAbs = v1y, xRel = v1Vector.x, yRel = v1Vector.y)
+//            InfoText(pointName = "v2", xAbs = v2x, yAbs = v2y, xRel = v2Vector.x, yRel = v2Vector.y)
+//            InfoText(pointName = "v3", xAbs = v3x, yAbs = v3y, xRel = v3Vector.x, yRel = v3Vector.y)
+//            Text(text = "  ")
+//            InfoText(
+//                pointName = "cp12a",
+//                xAbs = cp12ax,
+//                yAbs = cp12ay,
+//                xRel = cp12aVector.x,
+//                yRel = cp12aVector.y
+//            )
+//            InfoText(
+//                pointName = "cp12b",
+//                xAbs = cp12bx,
+//                yAbs = cp12by,
+//                xRel = cp12bVector.x,
+//                yRel = cp12bVector.y
+//            )
+//            InfoText(
+//                pointName = "cp23a",
+//                xAbs = cp23ax,
+//                yAbs = cp23ay,
+//                xRel = cp23aVector.x,
+//                yRel = cp23aVector.y
+//            )
+//            InfoText(
+//                pointName = "cp23b",
+//                xAbs = cp23bx,
+//                yAbs = cp23by,
+//                xRel = cp23bVector.x,
+//                yRel = cp23bVector.y
+//            )
 //            InfoText(
 //                pointName = "cp31a",
 //                xAbs = cp31ax,
@@ -138,7 +115,7 @@ fun CubicBezierViewer(modifier: Modifier = Modifier) {
 //                xRel = cp31bVector.x,
 //                yRel = cp31bVector.y
 //            )
-        }
+//        }
 
         DraggableCircle(
             offsetX = v1x,
@@ -188,27 +165,27 @@ fun CubicBezierViewer(modifier: Modifier = Modifier) {
             color = Color.Green
         )
 
-//        DraggableCircle(
-//            offsetX = cp31ax,
-//            offsetY = cp31ay,
-//            onDragX = { cp31ax += it },
-//            onDragY = { cp31ay += it },
-//            color = Color.Green
-//        )
-//        DraggableCircle(
-//            offsetX = cp31bx,
-//            offsetY = cp31by,
-//            onDragX = { cp31bx += it },
-//            onDragY = { cp31by += it },
-//            color = Color.Green
-//        )
+        DraggableCircle(
+            offsetX = cp31ax,
+            offsetY = cp31ay,
+            onDragX = { cp31ax += it },
+            onDragY = { cp31ay += it },
+            color = Color.Green
+        )
+        DraggableCircle(
+            offsetX = cp31bx,
+            offsetY = cp31by,
+            onDragX = { cp31bx += it },
+            onDragY = { cp31by += it },
+            color = Color.Green
+        )
 
         Canvas(modifier = Modifier.fillMaxSize()) {
             val path = Path().apply {
                 moveTo(v1x, v1y)
                 cubicTo(cp12ax, cp12ay, cp12bx, cp12by, v2x, v2y)
                 cubicTo(cp23ax, cp23ay, cp23bx, cp23by, v3x, v3y)
-//                cubicTo(cp31ax, cp31ay, cp31bx, cp31by, v1x, v1y)
+                cubicTo(cp31ax, cp31ay, cp31bx, cp31by, v1x, v1y)
             }
 
             drawPath(path = path, color = Color.Red, style = Stroke(width = 2f))
@@ -234,8 +211,6 @@ private fun DraggableCircle(
                     change.consumeAllChanges()
                     onDragX(dragAmount.x)
                     onDragY(dragAmount.y)
-//                    offsetX += dragAmount.x
-//                    offsetY += dragAmount.y
                 }
             }
     )
@@ -254,5 +229,4 @@ private fun InfoText(pointName: String, xAbs: Float, yAbs: Float, xRel: Float, y
         ),
         fontSize = 8.sp
     )
-
 }

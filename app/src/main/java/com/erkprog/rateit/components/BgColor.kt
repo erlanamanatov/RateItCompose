@@ -9,22 +9,22 @@ import androidx.compose.ui.graphics.lerp
 
 @Composable
 fun BgColor(progress: Float, modifier: Modifier) {
-    val sadColor = Color(0xfff4ddff)
+    val hideousColor = Color(0xfff4ddff)
     val okColor = Color(0xfffff5ee)
-    val greatColor = Color(0xffdbf4ff)
+    val goodColor = Color(0xffdbf4ff)
 
     var bgColor by remember { mutableStateOf(okColor) }
 
     bgColor = if (progress <= 0.5f) {
         lerp(
-            start = sadColor,
+            start = hideousColor,
             stop = okColor,
             progress * 2f
         )
     } else {
         lerp(
             start = okColor,
-            stop = greatColor,
+            stop = goodColor,
             progress * 2f - 1f
         )
     }

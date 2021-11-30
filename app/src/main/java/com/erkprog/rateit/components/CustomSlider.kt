@@ -24,14 +24,14 @@ fun CustomSlider(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     val thumbRadius = 10.dp // internal value
-    val borderBoxWidth = 70.dp
+    val outlineBoxSize = 70.dp
     BoxWithConstraints(
         modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         val width = constraints.maxWidth
         val widthDp = with(LocalDensity.current) { width.toDp() }
-        val sliderWidth = widthDp - (borderBoxWidth / 2 - thumbRadius) * 2
+        val sliderWidth = widthDp - (outlineBoxSize / 2 - thumbRadius) * 2
         val trackWidth = sliderWidth - thumbRadius * 2
         val boxOffset = lerp(
             start = 0.dp,
@@ -43,11 +43,11 @@ fun CustomSlider(
                 .zIndex(1f)
                 .offset(x = boxOffset)
                 .align(Alignment.CenterStart)
-                .size(70.dp)
+                .size(outlineBoxSize)
                 .border(
-                    width = 7.dp,
+                    width = outlineBoxSize/10,
                     color = Color(0xfffcfcff).copy(alpha = 0.7f),
-                    shape = RoundedCornerShape(20.dp)
+                    shape = RoundedCornerShape(25)
                 )
         )
 
